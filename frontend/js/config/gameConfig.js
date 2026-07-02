@@ -7,7 +7,7 @@
 
 export const GAME_CONFIG = {
     // Game identity
-    TITLE: 'ARENA CLASH',
+    TITLE: 'ANUAR CLASH',
     VERSION: '1.0.0',
 
     // Server connection

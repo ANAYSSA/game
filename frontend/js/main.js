@@ -239,11 +239,11 @@ game.registry.set('gameConfig', GAME_CONFIG);
 
 // ─── Global Error Handler ────────────────────────────────────────
 window.addEventListener('error', (e) => {
-    console.error('[ARENA CLASH] Global error:', e.message);
+    console.error('[ANUAR CLASH] Global error:', e.message);
 });
 
 window.addEventListener('unhandledrejection', (e) => {
-    console.error('[ARENA CLASH] Unhandled promise rejection:', e.reason);
+    console.error('[ANUAR CLASH] Unhandled promise rejection:', e.reason);
 });
 
 // Prevent context menu in game
