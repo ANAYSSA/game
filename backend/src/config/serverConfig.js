@@ -47,6 +47,14 @@ export const SERVER_CONFIG = {
 
     // King of the Hill Minigame
     KOTH_ZONE: { x: 1600, y: 1200, radius: 250 },
+
+    // Edge Turrets (Bullet Hell)
+    TURRETS: [
+        { x: 100, y: 1200 }, // Left edge
+        { x: 3100, y: 1200 }, // Right edge
+        { x: 1600, y: 100 }, // Top edge
+        { x: 1600, y: 2300 }, // Bottom edge
+    ],
 };
 
 export default SERVER_CONFIG;

@@ -19,6 +19,41 @@ export class CombatSystem {
         for (const [id, player] of this.gameState.players) {
             player.updateCooldowns(dt);
         }
+
+        // Apply fire trail damage
+        this.processFireTrails(dt);
+    }
+
+    processFireTrails(dt) {
+        // Fire trails do damage over time.
+        // Let's say 20 damage per second. We'll apply dt * 20.
+        const fireDamagePerSec = 30;
+        const damage = fireDamagePerSec * dt;
+
+        for (const [playerId, player] of this.gameState.players) {
+            if (!player.alive) continue;
+
+            for (const fire of this.gameState.fireTrails) {
+                if (fire.ownerId === playerId) continue; // Don't damage the creator
+                
+                const dx = player.x - fire.x;
+                const dy = player.y - fire.y;
+                const distSq = dx * dx + dy * dy;
+
+                if (distSq <= (fire.radius + player.charConfig.radius) ** 2) {
+                    const died = player.takeDamage(damage, fire.ownerId);
+                    if (died) {
+                        const owner = this.gameState.getPlayer(fire.ownerId);
+                        if (owner) {
+                            owner.kills++;
+                            this.emitDeath(player, owner);
+                        }
+                    }
+                    this.emitDamage(player, damage, fire.ownerId);
+                    break; // Only take damage from one fire trail at a time to prevent stacking
+                }
+            }
+        }
     }
 
     /**

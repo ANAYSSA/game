@@ -17,6 +17,9 @@ export class GameState {
         /** @type {Array<Object>} Active projectiles */
         this.projectiles = [];
 
+        /** @type {Array<Object>} Active fire trails */
+        this.fireTrails = [];
+
         /** @type {number} Next projectile ID */
         this.nextProjectileId = 1;
 
@@ -258,6 +261,12 @@ export class GameState {
                 ownerId: p.ownerId,
             }));
 
-        return { players, projectiles };
+        const fireTrails = this.fireTrails.map(f => ({
+            id: f.id,
+            x: Math.round(f.x),
+            y: Math.round(f.y),
+        }));
+
+        return { players, projectiles, fireTrails };
     }
 }

@@ -105,9 +105,42 @@ export const CHARACTER_DATA = {
             size: 52,
         },
     },
+
+    samurai: {
+        id: 'samurai',
+        name: 'Самурай',
+        nameEn: 'Samurai',
+        type: 'Убийца',
+        typeEn: 'Assassin',
+        weapon: 'Катана',
+        weaponEn: 'Katana',
+        description: 'Стремительный убийца, оставляющий за собой огненный след. Обладает уникальной способностью телепортироваться за спину врагам для внезапной атаки.',
+        descriptionEn: 'Fast assassin leaving a fire trail. Can teleport behind enemies.',
+
+        displayStats: {
+            hp: 2,
+            speed: 5,
+            damage: 4,
+            range: 2,
+            cooldown: 5,
+        },
+
+        color: 0x2980b9,        // Blue
+        accentColor: 0x5dade2,
+        glowColor: '#2980b9',
+        iconEmoji: '⛩️',
+
+        spriteConfig: {
+            bodyColor: 0x2980b9,
+            outlineColor: 0x1f618d,
+            weaponColor: 0xecf0f1,
+            size: 38,
+            isSamurai: true,
+        },
+    },
 };
 
 /** Ordered list for character selection UI */
-export const CHARACTER_ORDER = ['gopnik', 'armor', 'godzilla'];
+export const CHARACTER_ORDER = ['gopnik', 'armor', 'godzilla', 'samurai'];
 
 export default CHARACTER_DATA;

@@ -229,10 +229,23 @@
         <div class="hud-cooldown" id="hud-cooldown">
             <svg class="cooldown-svg" viewBox="0 0 60 60">
                 <circle class="cooldown-bg" cx="30" cy="30" r="26"></circle>
-                <circle class="cooldown-fill" id="cooldown-fill" cx="30" cy="30" r="26"></circle>
+                <circle class="cooldown-progress" id="cooldown-ring" cx="30" cy="30" r="26"></circle>
             </svg>
-            <span class="cooldown-icon" id="cooldown-icon">🔪</span>
+            <div class="cooldown-icon" id="cooldown-icon">⚔️</div>
         </div>
+
+        <!-- Teleport Menu (Samurai) -->
+        <div id="teleport-menu" style="display: none; position: absolute; bottom: 80px; left: 20px; z-index: 10;">
+            <button id="btn-teleport" class="btn btn-primary" style="background: #9b59b6; box-shadow: 0 0 10px #9b59b6; padding: 10px 15px;">
+                ⛩️ Телепорт
+            </button>
+            <div id="teleport-list" class="glass-panel" style="display: none; flex-direction: column; gap: 5px; margin-top: 5px; max-height: 150px; overflow-y: auto;">
+                <div style="font-size: 0.8rem; color: #aaa;">Выберите цель:</div>
+                <!-- Target buttons will be inserted here -->
+            </div>
+        </div>
+
+        <div class="mobile-hint">Управление: WASD для движения, Мышь для прицеливания, Клик для атаки</div>
 
         <!-- Death screen -->
         <div class="death-screen" id="death-screen" style="display: none;">

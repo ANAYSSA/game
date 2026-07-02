@@ -35,6 +35,11 @@ export class SocketHandler {
                 socket.emit('ping:response', timestamp);
             });
 
+            // ── Teleport (Samurai only) ───────────────────
+            socket.on('player:teleport', (data) => {
+                this.handleTeleport(socket, data);
+            });
+
             // ── Disconnect ────────────────────────────────
             socket.on('disconnect', (reason) => {
                 this.handleDisconnect(socket, reason);
@@ -92,6 +97,7 @@ export class SocketHandler {
             tickRate: SERVER_CONFIG.TICK_RATE,
             obstacles: this.gameState.obstacles,
             walls: this.gameState.walls,
+            turrets: SERVER_CONFIG.TURRETS,
         });
 
         // Notify all other players
@@ -133,6 +139,48 @@ export class SocketHandler {
         }
 
         player.queueInput(input);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  TELEPORT (Samurai)
+    // ═══════════════════════════════════════════════════════════
+
+    handleTeleport(socket, data) {
+        const player = this.gameState.getPlayer(socket.id);
+        if (!player || !player.alive || player.charConfig.id !== 'samurai') return;
+
+        const targetId = data.targetId;
+        const target = this.gameState.getPlayer(targetId);
+        
+        const now = Date.now();
+        
+        if (target && target.alive && targetId !== socket.id) {
+            // Teleport behind target
+            const offset = 40;
+            let tx = target.x;
+            let ty = target.y;
+
+            if (target.direction === 'right') tx -= offset;
+            else if (target.direction === 'left') tx += offset;
+            else if (target.direction === 'down') ty -= offset;
+            else if (target.direction === 'up') ty += offset;
+
+            // Clamp to map
+            tx = Math.max(20, Math.min(SERVER_CONFIG.MAP_WIDTH - 20, tx));
+            ty = Math.max(20, Math.min(SERVER_CONFIG.MAP_HEIGHT - 20, ty));
+
+            player.x = tx;
+            player.y = ty;
+            player.lastTeleportTime = now;
+
+            // Notify everyone to spawn teleport effect
+            this.io.emit('player:teleported', {
+                id: socket.id,
+                x: tx,
+                y: ty,
+                targetId: targetId
+            });
+        }
     }
 
     // ═══════════════════════════════════════════════════════════

@@ -69,6 +69,14 @@ export class BootScene extends Phaser.Scene {
                 size: 52,
                 weaponType: 'fire',
             },
+            samurai: {
+                bodyColor: 0x2980b9,
+                outlineColor: 0x1f618d,
+                accentColor: 0xecf0f1,
+                size: 38,
+                weaponType: 'katana',
+                isSamurai: true,
+            },
         };
 
         const directions = ['down', 'up', 'left', 'right'];
@@ -187,6 +195,19 @@ export class BootScene extends Phaser.Scene {
             }
         }
 
+        // Samurai hat (kasa)
+        if (config.isSamurai) {
+            graphics.fillStyle(0x34495e, 1);
+            graphics.lineStyle(2, 0x2c3e50, 1);
+            graphics.beginPath();
+            graphics.ellipse(cx + offsetX, cy + offsetY - r * 0.5, r * 1.6, r * 0.8, 0, 0, Math.PI * 2);
+            graphics.fillPath();
+            graphics.strokePath();
+            // Hat center
+            graphics.fillStyle(0x2c3e50, 1);
+            graphics.fillCircle(cx + offsetX, cy + offsetY - r * 0.7, r * 0.5);
+        }
+
         // ── Direction indicator (eyes/facing) ──────────────────
         const eyeR = r * 0.15;
         let eyeX1, eyeY1, eyeX2, eyeY2;
@@ -252,6 +273,26 @@ export class BootScene extends Phaser.Scene {
 
     drawWeaponIdle(graphics, config, cx, cy, r, direction) {
         switch (config.weaponType) {
+            case 'katana': {
+                // Long blade
+                graphics.fillStyle(config.accentColor, 1);
+                const bladeLen = r * 1.5;
+                switch (direction) {
+                    case 'right':
+                        graphics.fillRect(cx + r * 0.6, cy - 2, bladeLen, 3);
+                        break;
+                    case 'left':
+                        graphics.fillRect(cx - r * 0.6 - bladeLen, cy - 2, bladeLen, 3);
+                        break;
+                    case 'down':
+                        graphics.fillRect(cx + r * 0.6, cy + 2, bladeLen * 0.6, 3);
+                        break;
+                    case 'up':
+                        graphics.fillRect(cx - r * 0.6 - bladeLen * 0.6, cy - 4, bladeLen * 0.6, 3);
+                        break;
+                }
+                break;
+            }
             case 'knife': {
                 // Small knife at the side
                 graphics.fillStyle(config.accentColor, 1);
@@ -310,6 +351,38 @@ export class BootScene extends Phaser.Scene {
         const frame = parseInt(state.replace('attack', ''));
 
         switch (config.weaponType) {
+            case 'katana': {
+                // Katana slash arc (wider and further)
+                graphics.fillStyle(0xffffff, 0.7);
+                const ext = r * 1.2 + frame * 8;
+                switch (direction) {
+                    case 'right':
+                        graphics.fillStyle(config.accentColor, 1);
+                        graphics.fillRect(cx + r * 0.3, cy - 2 - frame * 3, ext, 4);
+                        graphics.fillStyle(0x3498db, 0.5 - frame * 0.1); // Blue flash
+                        graphics.fillCircle(cx + r * 0.3 + ext, cy - frame * 3, 10 + frame * 3);
+                        break;
+                    case 'left':
+                        graphics.fillStyle(config.accentColor, 1);
+                        graphics.fillRect(cx - r * 0.3 - ext, cy - 2 - frame * 3, ext, 4);
+                        graphics.fillStyle(0x3498db, 0.5 - frame * 0.1);
+                        graphics.fillCircle(cx - r * 0.3 - ext, cy - frame * 3, 10 + frame * 3);
+                        break;
+                    case 'down':
+                        graphics.fillStyle(config.accentColor, 1);
+                        graphics.fillRect(cx + r * 0.3 + frame * 2, cy + r * 0.3, 4, ext);
+                        graphics.fillStyle(0x3498db, 0.5 - frame * 0.1);
+                        graphics.fillCircle(cx + r * 0.3 + frame * 2, cy + r * 0.3 + ext, 10 + frame * 3);
+                        break;
+                    case 'up':
+                        graphics.fillStyle(config.accentColor, 1);
+                        graphics.fillRect(cx - r * 0.3 - frame * 2, cy - r * 0.3 - ext, 4, ext);
+                        graphics.fillStyle(0x3498db, 0.5 - frame * 0.1);
+                        graphics.fillCircle(cx - r * 0.3 - frame * 2, cy - r * 0.3 - ext, 10 + frame * 3);
+                        break;
+                }
+                break;
+            }
             case 'knife': {
                 // Knife slash arc
                 graphics.fillStyle(0xffffff, 0.6);

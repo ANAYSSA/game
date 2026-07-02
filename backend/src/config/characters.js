@@ -66,6 +66,26 @@ export const CHARACTERS = {
         hitboxWidth: 52,
         hitboxHeight: 52,
     },
+
+    samurai: {
+        id: 'samurai',
+        name: 'Самурай',
+        type: 'melee',
+        weapon: 'katana',
+
+        // Combat stats
+        maxHp: 80,
+        speed: 350,          // Very fast (like A-Train)
+        damage: 40,
+        attackRange: 70,     // pixels from center
+        attackArc: Math.PI,  // 180 degree arc (wide sweep)
+        cooldownMs: 40,      // Fast attacks
+
+        // Hitbox
+        radius: 18,
+        hitboxWidth: 36,
+        hitboxHeight: 36,
+    },
 };
 
 /** Valid character IDs for input validation */

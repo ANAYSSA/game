@@ -44,11 +44,12 @@ export class GameScene extends Phaser.Scene {
         this.inputManager = null; // Created after connection
 
         // Entities
-        this.localPlayer = null;
+        // Maps to track network entities
         this.remotePlayers = new Map();
         this.projectiles = new Map();
+        this.fireTrails = new Map();
 
-        // State
+        // ── Connect to Server ─────────────────────────────       
         this.playerId = null;
         this.playerData = null;
         this.mapData = null;
@@ -249,8 +250,29 @@ export class GameScene extends Phaser.Scene {
             else if (obs.type === 'pillar') key = 'obj_pillar';
             else if (obs.type === 'tree') key = 'obj_tree';
 
-            this.add.image(obs.x + tileSize / 2, obs.y + tileSize / 2, key)
-                .setDepth(obs.y + tileSize / 2);
+            const obsImg = this.add.image(obs.x + tileSize / 2, obs.y + tileSize / 2, key);
+            obsImg.setDepth(obs.y + tileSize / 2);
+        }
+
+        // Turrets
+        if (this.mapData.turrets) {
+            for (const turret of this.mapData.turrets) {
+                // Draw a simple turret base
+                const base = this.add.circle(turret.x, turret.y, 24, 0x333333);
+                base.setStrokeStyle(4, 0x111111);
+                base.setDepth(turret.y);
+                
+                // Add a blinking red light
+                const light = this.add.circle(turret.x, turret.y, 6, 0xff0000);
+                light.setDepth(turret.y + 1);
+                this.tweens.add({
+                    targets: light,
+                    alpha: 0.2,
+                    yoyo: true,
+                    repeat: -1,
+                    duration: 500
+                });
+            }
         }
 
         // Decorative glow marks (random placement)
@@ -393,6 +415,37 @@ export class GameScene extends Phaser.Scene {
             if (!currentProjectileIds.has(id)) {
                 proj.destroy();
                 this.projectiles.delete(id);
+            }
+        }
+
+        // Update fire trails
+        const currentFireTrails = new Set();
+        if (data.fireTrails) {
+            for (const ftData of data.fireTrails) {
+                currentFireTrails.add(ftData.id);
+
+                let ft = this.fireTrails.get(ftData.id);
+                if (!ft) {
+                    ft = this.add.circle(ftData.x, ftData.y, 20, 0xff0000, 0.4);
+                    ft.setDepth(0);
+                    // Add glow effect
+                    this.tweens.add({
+                        targets: ft,
+                        alpha: 0.1,
+                        yoyo: true,
+                        repeat: -1,
+                        duration: 500
+                    });
+                    this.fireTrails.set(ftData.id, ft);
+                }
+            }
+        }
+
+        // Remove old fire trails
+        for (const [id, ft] of this.fireTrails) {
+            if (!currentFireTrails.has(id)) {
+                ft.destroy();
+                this.fireTrails.delete(id);
             }
         }
 
@@ -578,6 +631,28 @@ export class GameScene extends Phaser.Scene {
         if (cooldownIcon) {
             cooldownIcon.textContent = charData?.iconEmoji || '⚔️';
         }
+
+        // Setup Teleport Menu for Samurai
+        const tpMenu = document.getElementById('teleport-menu');
+        const tpBtn = document.getElementById('btn-teleport');
+        const tpList = document.getElementById('teleport-list');
+        
+        if (tpMenu && this.selectedCharacter === 'samurai') {
+            tpMenu.style.display = 'block';
+            
+            // Toggle list
+            if (tpBtn) {
+                // Remove old listeners to prevent duplicates
+                const newBtn = tpBtn.cloneNode(true);
+                tpBtn.parentNode.replaceChild(newBtn, tpBtn);
+                
+                newBtn.addEventListener('click', () => {
+                    tpList.style.display = tpList.style.display === 'none' ? 'flex' : 'none';
+                });
+            }
+        } else if (tpMenu) {
+            tpMenu.style.display = 'none';
+        }
     }
 
     updateHUD(data) {
@@ -632,6 +707,33 @@ export class GameScene extends Phaser.Scene {
             } else {
                 document.getElementById('koth-king').textContent = 'Нет царя';
                 document.getElementById('koth-score').textContent = 'Очки: 0';
+            }
+        }
+
+        // Update Teleport List (Samurai only)
+        if (this.selectedCharacter === 'samurai' && data.players) {
+            const tpList = document.getElementById('teleport-list');
+            if (tpList && tpList.style.display === 'flex') {
+                // Clear old buttons except the title
+                const title = tpList.firstElementChild;
+                tpList.innerHTML = '';
+                if (title) tpList.appendChild(title);
+
+                for (const p of data.players) {
+                    if (p.id !== this.playerId && p.hp > 0) {
+                        const btn = document.createElement('button');
+                        btn.className = 'btn btn-secondary';
+                        btn.style.padding = '5px 10px';
+                        btn.style.fontSize = '0.8rem';
+                        btn.textContent = p.nick;
+                        
+                        btn.onclick = () => {
+                            this.networkManager.socket.emit('player:teleport', { targetId: p.id });
+                            tpList.style.display = 'none'; // hide after teleport
+                        };
+                        tpList.appendChild(btn);
+                    }
+                }
             }
         }
     }

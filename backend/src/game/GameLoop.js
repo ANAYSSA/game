@@ -25,6 +25,10 @@ export class GameLoop {
         // Performance monitoring
         this.tickTimes = [];
         this.maxTickTimeSamples = 60;
+
+        // Turret state
+        this.turretAngle = 0;
+        this.lastTurretFireTime = 0;
     }
 
     start() {
@@ -170,6 +174,8 @@ export class GameLoop {
 
     updateMinigames(dt) {
         const zone = SERVER_CONFIG.KOTH_ZONE;
+        const now = Date.now();
+        
         for (const [playerId, player] of this.gameState.players) {
             if (!player.alive) continue;
             
@@ -179,6 +185,52 @@ export class GameLoop {
             
             if (distSq <= zone.radius * zone.radius) {
                 player.kothScore += dt * 10; // 10 points per second
+            }
+
+            // Samurai fire trail
+            if (player.charConfig.id === 'samurai' && player.moving) {
+                if (!player.lastFireTrailTime || now - player.lastFireTrailTime > 150) { // spawn every 150ms
+                    player.lastFireTrailTime = now;
+                    this.gameState.fireTrails.push({
+                        id: ++this.gameState.nextProjectileId,
+                        ownerId: playerId,
+                        x: player.x,
+                        y: player.y,
+                        radius: 20,
+                        expiresAt: now + 3000, // 3 seconds
+                    });
+                }
+            }
+        }
+
+        // Cleanup expired fire trails
+        this.gameState.fireTrails = this.gameState.fireTrails.filter(f => f.expiresAt > now);
+
+        // Update Turrets (Bullet Hell)
+        this.turretAngle += dt * 1.5; // rotate
+        
+        if (now - this.lastTurretFireTime > 200) { // Fire every 200ms
+            this.lastTurretFireTime = now;
+            
+            for (const turret of SERVER_CONFIG.TURRETS) {
+                // Fire two projectiles in opposite directions
+                for (let i = 0; i < 2; i++) {
+                    const angle = this.turretAngle + (i * Math.PI);
+                    this.gameState.projectiles.push({
+                        id: ++this.gameState.nextProjectileId,
+                        ownerId: 'turret', // special owner
+                        x: turret.x,
+                        y: turret.y,
+                        dx: Math.cos(angle),
+                        dy: Math.sin(angle),
+                        speed: 300,
+                        radius: 8,
+                        damage: 20,
+                        distance: 0,
+                        maxDistance: 1000,
+                        alive: true,
+                    });
+                }
             }
         }
     }
@@ -218,6 +270,7 @@ export class GameLoop {
                     lastInput: player.lastProcessedInput,
                     players: snapshot.players,
                     projectiles: snapshot.projectiles,
+                    fireTrails: snapshot.fireTrails,
                 });
             }
         }
