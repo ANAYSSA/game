@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="description" content="ARENA CLASH — Мультиплеерная браузерная арена. Выбери персонажа и сражайся с игроками со всего мира!">
+    <meta name="theme-color" content="#0a0e17">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Prevent zoom on double-tap (iOS) -->
+    <meta name="touch-action" content="manipulation">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="ARENA CLASH">
+    <meta property="og:description" content="Мультиплеерная браузерная арена. Сражайся с игроками онлайн!">
+    <meta property="og:type" content="website">
+
+    <title>ARENA CLASH — Multiplayer Arena</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- MAIN MENU OVERLAY (shown before game starts)       -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="menu-overlay" class="overlay active">
+        <!-- Animated background particles (CSS-driven) -->
+        <div class="menu-bg">
+            <div class="bg-orb bg-orb-1"></div>
+            <div class="bg-orb bg-orb-2"></div>
+            <div class="bg-orb bg-orb-3"></div>
+            <div class="bg-orb bg-orb-4"></div>
+            <div class="bg-grid"></div>
+        </div>
+
+        <div class="menu-content">
+            <div class="menu-title-container">
+                <h1 class="menu-title" id="game-title">ARENA<span class="title-accent">CLASH</span></h1>
+                <p class="menu-subtitle">MULTIPLAYER BATTLE ARENA</p>
+            </div>
+
+            <nav class="menu-buttons">
+                <button class="btn btn-primary btn-large" id="btn-play">
+                    <span class="btn-icon">⚔️</span>
+                    <span class="btn-text">Играть</span>
+                    <span class="btn-glow"></span>
+                </button>
+                <button class="btn btn-secondary" id="btn-settings">
+                    <span class="btn-icon">⚙️</span>
+                    <span class="btn-text">Настройки</span>
+                </button>
+                <button class="btn btn-secondary" id="btn-about">
+                    <span class="btn-icon">ℹ️</span>
+                    <span class="btn-text">О разработчиках</span>
+                </button>
+            </nav>
+
+            <div class="menu-footer">
+                <span class="version-text">v1.0.0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- CHARACTER SELECT OVERLAY                            -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="charselect-overlay" class="overlay">
+        <div class="menu-bg">
+            <div class="bg-orb bg-orb-1"></div>
+            <div class="bg-orb bg-orb-2"></div>
+            <div class="bg-grid"></div>
+        </div>
+
+        <div class="charselect-content">
+            <h2 class="section-title">Выбери бойца</h2>
+
+            <div class="char-cards" id="char-cards">
+                <!-- Cards are generated dynamically by CharSelectScene -->
+            </div>
+
+            <!-- Character detail panel (shown after selection) -->
+            <div class="char-detail" id="char-detail" style="display: none;">
+                <div class="char-detail-inner">
+                    <div class="char-preview" id="char-preview"></div>
+                    <div class="char-info">
+                        <h3 class="char-name" id="char-detail-name"></h3>
+                        <span class="char-type-badge" id="char-detail-type"></span>
+                        <p class="char-desc" id="char-detail-desc"></p>
+                        <div class="char-stats" id="char-detail-stats"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charselect-actions">
+                <button class="btn btn-secondary" id="btn-back-menu">
+                    <span class="btn-icon">←</span>
+                    <span class="btn-text">Назад</span>
+                </button>
+                <button class="btn btn-primary btn-large" id="btn-battle" disabled>
+                    <span class="btn-icon">⚔️</span>
+                    <span class="btn-text">В бой!</span>
+                    <span class="btn-glow"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- SETTINGS MODAL                                      -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content glass-panel">
+            <h3 class="modal-title">Настройки</h3>
+
+            <div class="setting-group">
+                <label class="setting-label" for="setting-volume">Громкость</label>
+                <input type="range" id="setting-volume" class="setting-slider" min="0" max="100" value="70">
+                <span class="setting-value" id="volume-value">70%</span>
+            </div>
+
+            <div class="setting-group">
+                <label class="setting-label" for="setting-sfx">Звуковые эффекты</label>
+                <input type="range" id="setting-sfx" class="setting-slider" min="0" max="100" value="80">
+                <span class="setting-value" id="sfx-value">80%</span>
+            </div>
+
+            <div class="setting-group">
+                <label class="setting-label" for="setting-nick">Никнейм</label>
+                <input type="text" id="setting-nick" class="setting-input" placeholder="Player" maxlength="16" value="">
+            </div>
+
+            <div class="setting-group">
+                <label class="setting-label">Качество</label>
+                <div class="setting-radio-group">
+                    <label class="radio-label"><input type="radio" name="quality" value="low"> Низкое</label>
+                    <label class="radio-label"><input type="radio" name="quality" value="medium" checked> Среднее</label>
+                    <label class="radio-label"><input type="radio" name="quality" value="high"> Высокое</label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="btn-settings-close">
+                <span class="btn-text">Сохранить</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- ABOUT MODAL                                         -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="about-modal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content glass-panel">
+            <h3 class="modal-title">О разработчиках</h3>
+            <p class="about-text">
+                <strong>ARENA CLASH</strong> — мультиплеерная браузерная арена, созданная с использованием
+                современных веб-технологий.
+            </p>
+            <p class="about-text">
+                Движок: <strong>Phaser 3</strong><br>
+                Сервер: <strong>Node.js + Socket.IO</strong><br>
+                Архитектура: <strong>Authoritative Server</strong>
+            </p>
+            <p class="about-text about-credits">
+                Разработано с ❤️ для геймеров
+            </p>
+            <button class="btn btn-primary" id="btn-about-close">
+                <span class="btn-text">Закрыть</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- CONNECTION OVERLAY (shown when connecting/reconnecting) -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="connection-overlay" class="overlay">
+        <div class="connection-content">
+            <div class="spinner"></div>
+            <p class="connection-text" id="connection-text">Подключение к серверу...</p>
+            <p class="connection-subtext" id="connection-subtext">Это может занять до 60 секунд при первом подключении</p>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- HUD OVERLAY (shown during gameplay)                 -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="hud-overlay" class="overlay" style="display: none; pointer-events: none;">
+        <!-- Top bar -->
+        <div class="hud-top">
+            <div class="hud-player-info glass-panel-small">
+                <span class="hud-char-icon" id="hud-char-icon"></span>
+                <span class="hud-nickname" id="hud-nickname">Player</span>
+            </div>
+            <div class="hud-hp-container">
+                <div class="hud-hp-bar">
+                    <div class="hud-hp-fill" id="hud-hp-fill"></div>
+                    <span class="hud-hp-text" id="hud-hp-text">100 / 100</span>
+                </div>
+            </div>
+            <div class="hud-stats glass-panel-small">
+                <span class="hud-stat" id="hud-fps">60 FPS</span>
+                <span class="hud-stat-sep">|</span>
+                <span class="hud-stat" id="hud-ping">0ms</span>
+                <span class="hud-stat-sep">|</span>
+                <span class="hud-stat" id="hud-players">0 онлайн</span>
+            </div>
+        </div>
+
+        <!-- Cooldown indicator -->
+        <div class="hud-cooldown" id="hud-cooldown">
+            <svg class="cooldown-svg" viewBox="0 0 60 60">
+                <circle class="cooldown-bg" cx="30" cy="30" r="26"></circle>
+                <circle class="cooldown-fill" id="cooldown-fill" cx="30" cy="30" r="26"></circle>
+            </svg>
+            <span class="cooldown-icon" id="cooldown-icon">🔪</span>
+        </div>
+
+        <!-- Death screen -->
+        <div class="death-screen" id="death-screen" style="display: none;">
+            <div class="death-content">
+                <h2 class="death-title">💀 Вы погибли</h2>
+                <p class="death-timer" id="death-timer">Возрождение через 3...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- MOBILE CONTROLS (generated dynamically, touch only) -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="mobile-controls" style="display: none;">
+        <div class="joystick-zone" id="joystick-zone">
+            <div class="joystick-base" id="joystick-base">
+                <div class="joystick-thumb" id="joystick-thumb"></div>
+            </div>
+        </div>
+        <button class="attack-button" id="attack-button">
+            <span class="attack-icon" id="attack-icon">⚔️</span>
+        </button>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- PHASER GAME CANVAS                                  -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="game-container"></div>
+
+    <!-- Phaser 3 -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
+
+    <!-- Socket.IO Client -->
+    <script src="https://cdn.socket.io/4.8.0/socket.io.min.js"></script>
+
+    <!-- Game Entry Point -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
