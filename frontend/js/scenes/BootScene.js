@@ -199,10 +199,8 @@ export class BootScene extends Phaser.Scene {
         if (config.isSamurai) {
             graphics.fillStyle(0x34495e, 1);
             graphics.lineStyle(2, 0x2c3e50, 1);
-            graphics.beginPath();
-            graphics.ellipse(cx + offsetX, cy + offsetY - r * 0.5, r * 1.6, r * 0.8, 0, 0, Math.PI * 2);
-            graphics.fillPath();
-            graphics.strokePath();
+            graphics.fillEllipse(cx + offsetX, cy + offsetY - r * 0.5, r * 3.2, r * 1.6);
+            graphics.strokeEllipse(cx + offsetX, cy + offsetY - r * 0.5, r * 3.2, r * 1.6);
             // Hat center
             graphics.fillStyle(0x2c3e50, 1);
             graphics.fillCircle(cx + offsetX, cy + offsetY - r * 0.7, r * 0.5);
