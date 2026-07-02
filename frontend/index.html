@@ -218,6 +218,13 @@
             </div>
         </div>
 
+        <!-- King of the Hill -->
+        <div class="koth-leaderboard glass-panel-small" id="koth-leaderboard" style="position: absolute; top: 80px; left: 20px; display: flex; flex-direction: column; gap: 5px;">
+            <div style="font-family: var(--font-display); font-size: 0.8rem; color: #6366f1; text-transform: uppercase; font-weight: bold;">Царь Горы</div>
+            <div id="koth-king" style="font-size: 0.9rem; color: #fff;">Нет царя</div>
+            <div id="koth-score" style="font-size: 0.7rem; color: var(--text-secondary);">Очки: 0</div>
+        </div>
+
         <!-- Cooldown indicator -->
         <div class="hud-cooldown" id="hud-cooldown">
             <svg class="cooldown-svg" viewBox="0 0 60 60">
@@ -234,6 +241,9 @@
                 <p class="death-timer" id="death-timer">Возрождение через 3...</p>
             </div>
         </div>
+
+        <!-- Toast Notifications Container -->
+        <div class="toast-container" id="toast-container"></div>
     </div>
 
     <!-- ═══════════════════════════════════════════════════ -->

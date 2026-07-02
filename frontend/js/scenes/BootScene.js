@@ -14,6 +14,9 @@ export class BootScene extends Phaser.Scene {
         // We generate all sprites procedurally — no external assets to load.
         // This avoids CORS issues and keeps the game lightweight.
         // Show a loading bar for the generation process.
+        this.load.image('photo_gopnik', 'assets/Gopnik.jpg');
+        this.load.image('photo_armor', 'assets/Armor.jpg');
+        this.load.image('photo_godzilla', 'assets/Godzilla.jpg');
     }
 
     create() {
@@ -52,11 +55,12 @@ export class BootScene extends Phaser.Scene {
                 weaponType: 'knife',
             },
             armor: {
-                bodyColor: 0x3498db,
-                outlineColor: 0x2980b9,
-                accentColor: 0x2c3e50,
+                bodyColor: 0x111111, // Black cat
+                outlineColor: 0x000000,
+                accentColor: 0x555555,
                 size: 44,
                 weaponType: 'cannon',
+                isCat: true, // Flag for drawing ears
             },
             godzilla: {
                 bodyColor: 0x2ecc71,
@@ -126,6 +130,63 @@ export class BootScene extends Phaser.Scene {
         graphics.fillStyle(0xffffff, 0.2);
         graphics.fillCircle(cx + offsetX - r * 0.2, cy + offsetY - r * 0.4 - 2, r * 0.4);
 
+        // Cat ears for Armor
+        if (config.isCat) {
+            graphics.fillStyle(config.bodyColor, 1);
+            graphics.lineStyle(2, config.outlineColor, 1);
+            switch(direction) {
+                case 'down':
+                case 'up':
+                    // Left ear
+                    graphics.beginPath();
+                    graphics.moveTo(cx + offsetX - r * 0.8, cy + offsetY - r * 0.2);
+                    graphics.lineTo(cx + offsetX - r * 0.5, cy + offsetY - r * 0.9);
+                    graphics.lineTo(cx + offsetX - r * 0.1, cy + offsetY - r * 0.7);
+                    graphics.fillPath();
+                    graphics.strokePath();
+                    // Right ear
+                    graphics.beginPath();
+                    graphics.moveTo(cx + offsetX + r * 0.8, cy + offsetY - r * 0.2);
+                    graphics.lineTo(cx + offsetX + r * 0.5, cy + offsetY - r * 0.9);
+                    graphics.lineTo(cx + offsetX + r * 0.1, cy + offsetY - r * 0.7);
+                    graphics.fillPath();
+                    graphics.strokePath();
+                    break;
+                case 'left':
+                    // Right ear (back)
+                    graphics.beginPath();
+                    graphics.moveTo(cx + offsetX + r * 0.1, cy + offsetY - r * 0.5);
+                    graphics.lineTo(cx + offsetX + r * 0.4, cy + offsetY - r * 1.0);
+                    graphics.lineTo(cx + offsetX + r * 0.7, cy + offsetY - r * 0.2);
+                    graphics.fillPath();
+                    graphics.strokePath();
+                    // Left ear (front)
+                    graphics.beginPath();
+                    graphics.moveTo(cx + offsetX - r * 0.3, cy + offsetY - r * 0.5);
+                    graphics.lineTo(cx + offsetX - r * 0.2, cy + offsetY - r * 1.0);
+                    graphics.lineTo(cx + offsetX + r * 0.2, cy + offsetY - r * 0.5);
+                    graphics.fillPath();
+                    graphics.strokePath();
+                    break;
+                case 'right':
+                    // Left ear (back)
+                    graphics.beginPath();
+                    graphics.moveTo(cx + offsetX - r * 0.1, cy + offsetY - r * 0.5);
+                    graphics.lineTo(cx + offsetX - r * 0.4, cy + offsetY - r * 1.0);
+                    graphics.lineTo(cx + offsetX - r * 0.7, cy + offsetY - r * 0.2);
+                    graphics.fillPath();
+                    graphics.strokePath();
+                    // Right ear (front)
+                    graphics.beginPath();
+                    graphics.moveTo(cx + offsetX + r * 0.3, cy + offsetY - r * 0.5);
+                    graphics.lineTo(cx + offsetX + r * 0.2, cy + offsetY - r * 1.0);
+                    graphics.lineTo(cx + offsetX - r * 0.2, cy + offsetY - r * 0.5);
+                    graphics.fillPath();
+                    graphics.strokePath();
+                    break;
+            }
+        }
+
         // ── Direction indicator (eyes/facing) ──────────────────
         const eyeR = r * 0.15;
         let eyeX1, eyeY1, eyeX2, eyeY2;
@@ -158,12 +219,24 @@ export class BootScene extends Phaser.Scene {
         }
 
         // Eyes
-        graphics.fillStyle(0xffffff, 0.9);
-        graphics.fillCircle(eyeX1, eyeY1, eyeR);
-        graphics.fillCircle(eyeX2, eyeY2, eyeR);
-        graphics.fillStyle(0x000000, 1);
-        graphics.fillCircle(eyeX1, eyeY1, eyeR * 0.5);
-        graphics.fillCircle(eyeX2, eyeY2, eyeR * 0.5);
+        let eyeColor = 0xffffff;
+        if (config.isCat) eyeColor = 0xffff00; // Yellow cat eyes
+        
+        graphics.fillStyle(eyeColor, 0.9);
+        if (config.isCat) {
+            // Slit eyes
+            graphics.fillEllipse(eyeX1, eyeY1, eyeR, eyeR * 1.5);
+            graphics.fillEllipse(eyeX2, eyeY2, eyeR, eyeR * 1.5);
+            graphics.fillStyle(0x000000, 1);
+            graphics.fillEllipse(eyeX1, eyeY1, eyeR * 0.2, eyeR * 1.2);
+            graphics.fillEllipse(eyeX2, eyeY2, eyeR * 0.2, eyeR * 1.2);
+        } else {
+            graphics.fillCircle(eyeX1, eyeY1, eyeR);
+            graphics.fillCircle(eyeX2, eyeY2, eyeR);
+            graphics.fillStyle(0x000000, 1);
+            graphics.fillCircle(eyeX1, eyeY1, eyeR * 0.5);
+            graphics.fillCircle(eyeX2, eyeY2, eyeR * 0.5);
+        }
 
         // ── Weapon ────────────────────────────────────────────
         if (state.startsWith('attack')) {

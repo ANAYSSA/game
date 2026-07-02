@@ -476,6 +476,19 @@ html, body {
 
 .char-card.selected::before {
     opacity: 1;
+    position: relative;
+    z-index: 1;
+}
+
+.char-card-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    margin-bottom: var(--space-sm);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    border: 2px solid var(--card-color);
 }
 
 .char-card-icon {
@@ -991,6 +1004,46 @@ html, body {
     font-family: var(--font-display);
     font-size: 1.2rem;
     color: var(--text-secondary);
+}
+
+/* Toast Notifications */
+.toast-container {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.toast {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-left: 4px solid var(--accent-primary);
+    border-radius: var(--radius-sm);
+    padding: 10px 15px;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    animation: toastSlideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.toast.fade-out {
+    animation: toastFadeOut 0.5s ease-in forwards;
+}
+
+@keyframes toastSlideIn {
+    0% { transform: translateX(100%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes toastFadeOut {
+    0% { transform: translateX(0); opacity: 1; }
+    100% { transform: translateX(50px); opacity: 0; }
 }
 
 /* ── Mobile Controls ──────────────────────────────────────────── */

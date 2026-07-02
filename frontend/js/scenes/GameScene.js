@@ -136,6 +136,7 @@ export class GameScene extends Phaser.Scene {
         // New player joined
         this.networkManager.on('playerJoined', (data) => {
             console.log(`[GameScene] Player joined: ${data.nick}`);
+            this.showToast(`🟢 Игрок ${data.nick} присоединился`);
         });
 
         // Player left
@@ -146,6 +147,7 @@ export class GameScene extends Phaser.Scene {
                 this.remotePlayers.delete(data.id);
             }
             console.log(`[GameScene] Player left: ${data.nickname}`);
+            this.showToast(`🔴 Игрок ${data.nickname} вышел`);
         });
 
         // Player respawn
@@ -180,6 +182,27 @@ export class GameScene extends Phaser.Scene {
                 'Обновите страницу для повторной попытки'
             );
         });
+    }
+
+    showToast(message) {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = message;
+
+        container.appendChild(toast);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            toast.classList.add('fade-out');
+            setTimeout(() => {
+                if (toast.parentNode === container) {
+                    container.removeChild(toast);
+                }
+            }, 500);
+        }, 3000);
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -236,6 +259,18 @@ export class GameScene extends Phaser.Scene {
             const gy = Phaser.Math.Between(2, rows - 3) * tileSize + tileSize / 2;
             this.add.image(gx, gy, 'deco_glow').setDepth(0).setAlpha(0.3);
         }
+
+        // King of the Hill Zone (1600, 1200, radius 250)
+        const kothZone = this.add.circle(1600, 1200, 250, 0x6366f1, 0.2);
+        kothZone.setStrokeStyle(4, 0x6366f1, 0.8);
+        kothZone.setDepth(0);
+        
+        this.add.text(1600, 1200, 'ЦАРЬ ГОРЫ', {
+            fontFamily: 'Orbitron',
+            fontSize: '32px',
+            color: '#6366f1',
+            align: 'center'
+        }).setOrigin(0.5).setDepth(0).setAlpha(0.5);
 
         // Set world bounds
         this.physics.world.setBounds(0, 0, width, height);
@@ -576,6 +611,28 @@ export class GameScene extends Phaser.Scene {
         if (playersEl) {
             const count = data.players ? data.players.length : 0;
             playersEl.textContent = `${count} онлайн`;
+        }
+
+        // King of the Hill Leaderboard
+        if (data.players && data.players.length > 0) {
+            let king = null;
+            let maxScore = -1;
+
+            // Find player with max KOTH score
+            for (const p of data.players) {
+                if (p.kothScore > maxScore) {
+                    maxScore = p.kothScore;
+                    king = p;
+                }
+            }
+
+            if (king && maxScore > 0) {
+                document.getElementById('koth-king').textContent = `👑 ${king.nick}`;
+                document.getElementById('koth-score').textContent = `Очки: ${Math.floor(maxScore)}`;
+            } else {
+                document.getElementById('koth-king').textContent = 'Нет царя';
+                document.getElementById('koth-score').textContent = 'Очки: 0';
+            }
         }
     }
 

@@ -78,7 +78,7 @@ export class CharSelectScene extends Phaser.Scene {
             card.style.setProperty('--card-glow', char.glowColor + '33');
 
             card.innerHTML = `
-                <span class="char-card-icon">${char.iconEmoji}</span>
+                <div class="char-card-image" style="background-image: url('assets/${charId.charAt(0).toUpperCase() + charId.slice(1)}.jpg')"></div>
                 <span class="char-card-name">${char.name}</span>
                 <span class="char-card-type">${char.type}</span>
                 <span class="char-card-weapon">${char.weapon}</span>
@@ -105,7 +105,7 @@ export class CharSelectScene extends Phaser.Scene {
         document.getElementById('char-detail-name').textContent = char.name;
         document.getElementById('char-detail-type').textContent = char.type;
         document.getElementById('char-detail-desc').textContent = char.description;
-        document.getElementById('char-preview').textContent = char.iconEmoji;
+        document.getElementById('char-preview').innerHTML = `<img src="assets/${charId.charAt(0).toUpperCase() + charId.slice(1)}.jpg" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
 
         // Set type badge color
         const badge = document.getElementById('char-detail-type');

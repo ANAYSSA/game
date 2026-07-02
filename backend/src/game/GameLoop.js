@@ -61,6 +61,9 @@ export class GameLoop {
         // ─── 3. Update combat (cooldowns, projectiles, damage)
         this.combatSystem.update(dt);
 
+        // ─── 3.5 Update Minigames (King of the Hill) ──────────
+        this.updateMinigames(dt);
+
         // ─── 4. Update respawn timers ─────────────────────────
         this.updateRespawns(dt);
 
@@ -164,6 +167,21 @@ export class GameLoop {
     // ═══════════════════════════════════════════════════════════
     //  RESPAWN
     // ═══════════════════════════════════════════════════════════
+
+    updateMinigames(dt) {
+        const zone = SERVER_CONFIG.KOTH_ZONE;
+        for (const [playerId, player] of this.gameState.players) {
+            if (!player.alive) continue;
+            
+            const dx = player.x - zone.x;
+            const dy = player.y - zone.y;
+            const distSq = dx * dx + dy * dy;
+            
+            if (distSq <= zone.radius * zone.radius) {
+                player.kothScore += dt * 10; // 10 points per second
+            }
+        }
+    }
 
     updateRespawns(dt) {
         const now = Date.now();

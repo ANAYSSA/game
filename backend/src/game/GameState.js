@@ -245,6 +245,7 @@ export class GameState {
                 nick: player.nickname,
                 attacking: player.attacking,
                 attackTimer: player.attackAnimTimer > 0 ? 1 : 0,
+                kothScore: player.kothScore,
             });
         }
 

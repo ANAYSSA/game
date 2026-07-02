@@ -44,6 +44,9 @@ export const SERVER_CONFIG = {
     // Anti-cheat
     SPEED_TOLERANCE: 1.3, // Allow 30% over max speed (lag compensation)
     MAX_INPUT_QUEUE: 60,  // Max queued inputs before dropping
+
+    // King of the Hill Minigame
+    KOTH_ZONE: { x: 1600, y: 1200, radius: 250 },
 };
 
 export default SERVER_CONFIG;

@@ -37,6 +37,7 @@ export class PlayerState {
         this.respawnAt = null;      // Timestamp when player should respawn
         this.deaths = 0;
         this.kills = 0;
+        this.kothScore = 0;         // King of the Hill score
 
         // Network
         this.inputQueue = [];
