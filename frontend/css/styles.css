@@ -410,6 +410,9 @@ html, body {
     max-width: 1000px;
     width: 100%;
     animation: menuFadeIn 0.6s ease-out;
+    max-height: 100vh;
+    overflow-y: auto;
+    padding-bottom: var(--space-2xl); /* extra space for scrolling */
 }
 
 .section-title {
