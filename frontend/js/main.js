@@ -11,6 +11,7 @@ import { MenuScene } from './scenes/MenuScene.js';
 import { CharSelectScene } from './scenes/CharSelectScene.js';
 import { GameScene } from './scenes/GameScene.js';
 import { HUDScene } from './scenes/HUDScene.js';
+import { AimTrainerScene } from './scenes/AimTrainerScene.js';
 
 // ─── Phaser Configuration ────────────────────────────────────────
 const phaserConfig = {
@@ -40,7 +41,7 @@ const phaserConfig = {
         forceSetTimeOut: false,
     },
 
-    scene: [BootScene, MenuScene, CharSelectScene, GameScene, HUDScene],
+    scene: [BootScene, MenuScene, CharSelectScene, GameScene, HUDScene, AimTrainerScene],
 
     input: {
         activePointers: 3, // Support multi-touch for mobile
@@ -146,6 +147,12 @@ class UIController {
 
         document.getElementById('btn-about').addEventListener('click', () => {
             this.aboutModal.classList.add('active');
+        });
+
+        document.getElementById('btn-minigame').addEventListener('click', () => {
+            this.showScreen('game');
+            game.scene.stop('MenuScene');
+            game.scene.start('AimTrainerScene');
         });
 
         document.getElementById('btn-back-menu').addEventListener('click', () => {

@@ -88,9 +88,13 @@ export class RemotePlayer {
         this.y += (this.targetY - this.y) * lerpFactor;
 
         this.sprite.setPosition(this.x, this.y);
+        this.sprite.setDepth(this.y);
         this.nameText.setPosition(this.x, this.y - 42);
+        this.nameText.setDepth(this.y + 20);
         this.hpBarBg.setPosition(this.x, this.y - 32);
+        this.hpBarBg.setDepth(this.y + 20);
         this.hpBarFill.setPosition(this.x - 25, this.y - 32);
+        this.hpBarFill.setDepth(this.y + 20);
 
         // HP bar
         const hpPercent = Math.max(0, this.hp / this.maxHp);

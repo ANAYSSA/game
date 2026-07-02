@@ -216,7 +216,7 @@ export class GameScene extends Phaser.Scene {
         // Wall tiles
         for (const wall of walls) {
             this.add.image(wall.x + tileSize / 2, wall.y + tileSize / 2, 'tile_wall')
-                .setDepth(1);
+                .setDepth(wall.y + tileSize / 2);
         }
 
         // Obstacles
@@ -227,7 +227,7 @@ export class GameScene extends Phaser.Scene {
             else if (obs.type === 'tree') key = 'obj_tree';
 
             this.add.image(obs.x + tileSize / 2, obs.y + tileSize / 2, key)
-                .setDepth(5);
+                .setDepth(obs.y + tileSize / 2);
         }
 
         // Decorative glow marks (random placement)

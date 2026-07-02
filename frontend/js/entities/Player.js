@@ -64,9 +64,13 @@ export class Player {
 
         // Update position
         this.sprite.setPosition(x, y);
+        this.sprite.setDepth(y);
         this.nameText.setPosition(x, y - 42);
+        this.nameText.setDepth(y + 20);
         this.hpBarBg.setPosition(x, y - 32);
+        this.hpBarBg.setDepth(y + 20);
         this.hpBarFill.setPosition(x - 25, y - 32);
+        this.hpBarFill.setDepth(y + 20);
 
         // Update HP bar
         const hpPercent = Math.max(0, hp / maxHp);

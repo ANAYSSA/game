@@ -382,37 +382,63 @@ export class BootScene extends Phaser.Scene {
             g.lineBetween(35, 15, 50, 40);
         });
 
-        // Wall tile
+        // Wall tile (Pseudo-3D)
         this.generateTile('tile_wall', tileSize, (g, s) => {
-            g.fillStyle(0x4a4a6a, 1);
-            g.fillRect(0, 0, s, s);
-            // Brick pattern
-            g.lineStyle(2, 0x3a3a5a, 0.8);
-            g.strokeRect(1, 1, s - 2, s - 2);
-            g.lineStyle(1, 0x5a5a8a, 0.4);
-            g.lineBetween(0, s / 2, s, s / 2);
-            g.lineBetween(s / 2, 0, s / 2, s / 2);
-            g.lineBetween(s / 4, s / 2, s / 4, s);
-            g.lineBetween(s * 3 / 4, s / 2, s * 3 / 4, s);
-            // Highlight
-            g.fillStyle(0xffffff, 0.05);
+            const h = 24; // Wall height
+            
+            // Drop shadow
+            g.fillStyle(0x000000, 0.4);
+            g.fillRect(10, 10, s, s);
+            
+            // Front face
+            g.fillStyle(0x3a3a5a, 1);
+            g.fillRect(0, h, s, s - h);
+            g.lineStyle(1, 0x2a2a4a, 1);
+            g.strokeRect(0, h, s, s - h);
+            
+            // Brick pattern on front
+            g.lineStyle(1, 0x2a2a4a, 0.5);
+            g.lineBetween(0, h + (s-h)/2, s, h + (s-h)/2);
+            g.lineBetween(s/2, h, s/2, h + (s-h)/2);
+            g.lineBetween(s/4, h + (s-h)/2, s/4, s);
+            g.lineBetween(s*3/4, h + (s-h)/2, s*3/4, s);
+            
+            // Top face
+            g.fillStyle(0x5a5a7a, 1);
+            g.fillRect(0, 0, s, h);
+            g.lineStyle(1, 0x6a6a8a, 1);
+            g.strokeRect(0, 0, s, h);
+            
+            // Highlight on top edge
+            g.fillStyle(0xffffff, 0.1);
             g.fillRect(0, 0, s, 2);
         });
 
-        // Obstacle: crate
+        // Obstacle: crate (Pseudo-3D)
         this.generateTile('obj_crate', tileSize, (g, s) => {
-            const m = 6;
+            const m = 8;
+            const h = 16;
+            
+            // Shadow
+            g.fillStyle(0x000000, 0.4);
+            g.fillRect(m + 10, m + 10, s - m * 2, s - m * 2);
+            
+            // Front face
+            g.fillStyle(0x6B4914, 1);
+            g.fillRect(m, m + h, s - m * 2, s - m * 2 - h);
+            g.lineStyle(2, 0x4B2904, 1);
+            g.strokeRect(m, m + h, s - m * 2, s - m * 2 - h);
+            
+            // Top face
             g.fillStyle(0x8B6914, 1);
-            g.fillRect(m, m, s - m * 2, s - m * 2);
+            g.fillRect(m, m, s - m * 2, h);
             g.lineStyle(2, 0x6B4914, 1);
-            g.strokeRect(m, m, s - m * 2, s - m * 2);
-            // Cross bands
+            g.strokeRect(m, m, s - m * 2, h);
+            
+            // Cross bands on top
             g.lineStyle(2, 0x6B4914, 0.8);
-            g.lineBetween(m, m, s - m, s - m);
-            g.lineBetween(s - m, m, m, s - m);
-            // Center plate
-            g.fillStyle(0x9B7924, 1);
-            g.fillRect(s / 2 - 6, s / 2 - 6, 12, 12);
+            g.lineBetween(m, m, s - m, m + h);
+            g.lineBetween(s - m, m, m, m + h);
         });
 
         // Obstacle: rock
