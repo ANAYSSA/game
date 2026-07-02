@@ -14,7 +14,7 @@ export const GAME_CONFIG = {
     // Change this to your Render.com URL in production
     SERVER_URL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'http://localhost:3000'
-        : 'https://arena-clash-server.onrender.com', // ← Replace with your Render URL
+        : 'https://game-cx2v.onrender.com', // ← Replace with your Render URL
 
     // Phaser renderer settings
     GAME_WIDTH: 1280,
